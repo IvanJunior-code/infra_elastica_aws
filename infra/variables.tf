@@ -4,9 +4,11 @@ variable "regiao" {
 }
 
 variable "key_name" {
+  nullable = false
 }
 
 variable "path_key" {
+  nullable = false
 }
 
 variable "image_id" {
