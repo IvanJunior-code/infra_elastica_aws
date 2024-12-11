@@ -24,3 +24,11 @@ variable "instance_type" {
 variable "grupoSeguranca" {
   type = string
 }
+
+variable "min_size" {
+  type = number
+}
+
+variable "max_size" {
+  type = number
+}
