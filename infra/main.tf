@@ -11,13 +11,13 @@ provider "aws" {
   region = var.regiao
 }
 
-# resource "aws_launch_template" "foo" {
-#   name = "foo"
-#   image_id = "ami-test"
-#   instance_type = "t2.micro"
-#   key_name = "test"
+resource "aws_launch_template" "template_maquina" {
+  name          = "Template_de_Maquina"
+  image_id      = var.image_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
 
-#   tags = {
-
-#   }
-# }
+  tags = {
+    Name = "Template de Máquina"
+  }
+}
