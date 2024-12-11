@@ -1,3 +1,8 @@
 variable "regiao" {
-  default = "us-east1"
+  type = string
+  default = "us-east-1"
+}
+
+variable "key" {
+  
 }
