@@ -22,3 +22,14 @@ resource "aws_launch_template" "template_maquina" {
     Name = "Template de Máquina"
   }
 }
+
+resource "aws_autoscaling_group" "autoscaling_maquinas" {
+  name               = "Autoscaling_maquinas"
+  availability_zones = ["${var.regiao}a"]
+  launch_template {
+    id      = aws_launch_template.template_maquina.id
+    version = "$Latest"
+  }
+  min_size = var.min_size
+  max_size = var.max_size
+}
