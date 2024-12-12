@@ -33,3 +33,39 @@ resource "aws_autoscaling_group" "autoscaling_maquinas" {
   min_size = var.min_size
   max_size = var.max_size
 }
+
+resource "aws_lb" "load_balancer" {
+  name               = "LoadBalancer"
+  internal           = false
+  subnets            = [aws_default_subnet.subnet1.id, aws_default_subnet.subnet2.id]
+
+  tags = {
+    Name = "Load Balancer"
+  }
+}
+
+resource "aws_default_vpc" "default_vpc" {
+  tags = {
+    Name = "Default VPC"
+  }
+}
+
+resource "aws_default_subnet" "subnet1" {
+  availability_zone = "${var.regiao}a"
+
+  tags = {
+    Name = "Subnet Default 1"
+  }
+}
+
+resource "aws_default_subnet" "subnet2" {
+  availability_zone = "${var.regiao}b"
+
+  tags = {
+    Name = "Subnet Default 2"
+  }
+}
+
+#target group
+#listener
+
