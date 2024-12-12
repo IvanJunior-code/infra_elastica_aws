@@ -35,9 +35,9 @@ resource "aws_autoscaling_group" "autoscaling_maquinas" {
 }
 
 resource "aws_lb" "load_balancer" {
-  name               = "LoadBalancer"
-  internal           = false
-  subnets            = [aws_default_subnet.subnet1.id, aws_default_subnet.subnet2.id]
+  name     = "LoadBalancer"
+  internal = false
+  subnets  = [aws_default_subnet.subnet1.id, aws_default_subnet.subnet2.id]
 
   tags = {
     Name = "Load Balancer"
@@ -66,6 +66,17 @@ resource "aws_default_subnet" "subnet2" {
   }
 }
 
-#target group
+resource "aws_lb_target_group" "target_group" {
+  name     = "TargetGroup"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_default_vpc.default_vpc.id
+
+  tags = {
+    Name = "Target Group"
+  }
+
+}
+
 #listener
 
