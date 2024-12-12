@@ -25,16 +25,16 @@ resource "aws_launch_template" "template_maquina" {
 
 resource "aws_autoscaling_group" "autoscaling_maquinas" {
   name               = "Autoscaling_maquinas"
-  availability_zones = [ "${var.regiao}a", "${var.regiao}b" ]
-  min_size = var.min_size
-  max_size = var.max_size
-  
+  availability_zones = ["${var.regiao}a", "${var.regiao}b"]
+  min_size           = var.min_size
+  max_size           = var.max_size
+
   launch_template {
     id      = aws_launch_template.template_maquina.id
     version = "$Latest"
   }
 
-  target_group_arns = [ aws_lb_target_group.target_group.arn ]
+  target_group_arns = [aws_lb_target_group.target_group.arn]
 
 }
 
@@ -93,5 +93,18 @@ resource "aws_lb_listener" "load_balancer_listener" {
 
   tags = {
     Name = "Load Balancer Listener"
+  }
+}
+
+resource "aws_autoscaling_policy" "autoscaling_policy" {
+  name                   = "AutoscalingPolicy"
+  autoscaling_group_name = aws_autoscaling_group.autoscaling_maquinas.name
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 50.0
   }
 }
