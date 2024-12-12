@@ -26,12 +26,16 @@ resource "aws_launch_template" "template_maquina" {
 resource "aws_autoscaling_group" "autoscaling_maquinas" {
   name               = "Autoscaling_maquinas"
   availability_zones = ["${var.regiao}a"]
+  min_size = var.min_size
+  max_size = var.max_size
+  
   launch_template {
     id      = aws_launch_template.template_maquina.id
     version = "$Latest"
   }
-  min_size = var.min_size
-  max_size = var.max_size
+
+  target_group_arns = [ aws_lb_target_group.target_group.arn ]
+
 }
 
 resource "aws_lb" "load_balancer" {
@@ -75,8 +79,19 @@ resource "aws_lb_target_group" "target_group" {
   tags = {
     Name = "Target Group"
   }
-
 }
 
-#listener
+resource "aws_lb_listener" "load_balancer_listener" {
+  load_balancer_arn = aws_lb.load_balancer.arn
+  port              = "80"
+  protocol          = "HTTP"
 
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
+
+  tags = {
+    Name = "Load Balancer Listener"
+  }
+}
