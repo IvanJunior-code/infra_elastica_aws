@@ -25,7 +25,7 @@ resource "aws_launch_template" "template_maquina" {
 
 resource "aws_autoscaling_group" "autoscaling_maquinas" {
   name               = "Autoscaling_maquinas"
-  availability_zones = ["${var.regiao}a"]
+  availability_zones = [ "${var.regiao}a", "${var.regiao}b" ]
   min_size = var.min_size
   max_size = var.max_size
   
