@@ -18,6 +18,16 @@ resource "aws_launch_template" "template_maquina" {
   key_name             = var.key_name
   security_group_names = [var.grupoSeguranca]
 
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              sudo apt update -y
+              sudo apt install -y nginx
+              echo "<h1>Bem-vindo à Página Web Servida pelo Nginx!</h1>" | sudo tee /var/www/html/index.html
+              sudo systemctl start nginx
+              sudo systemctl enable nginx
+              EOF
+  )
+
   tags = {
     Name = "Template de Máquina"
   }
