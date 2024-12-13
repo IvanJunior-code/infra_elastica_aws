@@ -9,6 +9,9 @@ terraform {
 
 provider "aws" {
   region = var.regiao
+  default_tags {
+    tags = local.management_tags
+  }
 }
 
 resource "aws_launch_template" "template_maquina" {
@@ -22,7 +25,7 @@ resource "aws_launch_template" "template_maquina" {
               #!/bin/bash
               sudo apt update -y
               sudo apt install -y nginx
-              echo "<h1>Bem-vindo à Página Web Servida pelo Nginx!</h1>" | sudo tee /var/www/html/index.html
+              echo "${file("${path.module}/index.html")}" | sudo tee /var/www/html/index.html
               sudo systemctl start nginx
               sudo systemctl enable nginx
               EOF
