@@ -32,3 +32,7 @@ variable "min_size" {
 variable "max_size" {
   type = number
 }
+
+variable "environment" {
+  type = string
+}
