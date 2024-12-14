@@ -19,20 +19,20 @@ resource "aws_launch_template" "template_maquina" {
   image_id             = var.image_id
   instance_type        = var.instance_type
   key_name             = var.key_name
-  security_group_names = [var.grupoSeguranca]
+  security_group_names = [var.environment]
 
-  user_data = base64encode(<<-EOF
+  user_data = var.prod ? base64encode(<<-EOF
               #!/bin/bash
               sudo apt update -y
               sudo apt install -y nginx
-              echo "${file("${path.module}/index.html")}" | sudo tee /var/www/html/index.html
+              echo "${file("index.html")}" | sudo tee /var/www/html/index.html
               sudo systemctl start nginx
               sudo systemctl enable nginx
               EOF
-  )
+  ) : ""
 
   tags = {
-    Name = "Template de Máquina"
+    Name = "Máquina de ${var.environment}"
   }
 }
 
@@ -47,11 +47,12 @@ resource "aws_autoscaling_group" "autoscaling_maquinas" {
     version = "$Latest"
   }
 
-  target_group_arns = [aws_lb_target_group.target_group.arn]
+  target_group_arns = var.prod ? [aws_lb_target_group.target_group[0].arn] : []
 
 }
 
 resource "aws_lb" "load_balancer" {
+  count    = var.prod ? 1 : 0
   name     = "LoadBalancer"
   internal = false
   subnets  = [aws_default_subnet.subnet1.id, aws_default_subnet.subnet2.id]
@@ -84,6 +85,7 @@ resource "aws_default_subnet" "subnet2" {
 }
 
 resource "aws_lb_target_group" "target_group" {
+  count    = var.prod ? 1 : 0
   name     = "TargetGroup"
   port     = 80
   protocol = "HTTP"
@@ -95,13 +97,14 @@ resource "aws_lb_target_group" "target_group" {
 }
 
 resource "aws_lb_listener" "load_balancer_listener" {
-  load_balancer_arn = aws_lb.load_balancer.arn
+  count             = var.prod ? 1 : 0
+  load_balancer_arn = aws_lb.load_balancer[0].arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group.arn
+    target_group_arn = aws_lb_target_group.target_group[0].arn
   }
 
   tags = {
@@ -110,6 +113,7 @@ resource "aws_lb_listener" "load_balancer_listener" {
 }
 
 resource "aws_autoscaling_policy" "autoscaling_policy" {
+  count                  = var.prod ? 1 : 0
   name                   = "AutoscalingPolicy"
   autoscaling_group_name = aws_autoscaling_group.autoscaling_maquinas.name
   policy_type            = "TargetTrackingScaling"
