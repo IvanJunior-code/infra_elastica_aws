@@ -21,9 +21,9 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "grupoSeguranca" {
-  type = string
-}
+# variable "grupoSeguranca" {
+#   type = string
+# }
 
 variable "min_size" {
   type = number
@@ -35,4 +35,8 @@ variable "max_size" {
 
 variable "environment" {
   type = string
+}
+
+variable "prod" {
+  type = bool
 }
