@@ -21,10 +21,6 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-# variable "grupoSeguranca" {
-#   type = string
-# }
-
 variable "min_size" {
   type = number
 }
