@@ -9,10 +9,10 @@ Este projeto tem como objetivo testar e demonstrar a configuração de um Load B
 
 O objetivo principal deste repositório é testar e demonstrar como configurar um Load Balancer na AWS usando Terraform para distribuir tráfego entre instâncias EC2. O estudo inclui:
 
-Criação de um Application Load Balancer (ALB).
-Configuração de listeners e regras de roteamento de tráfego.
-Deploy de instâncias EC2 com um servidor web configurado para responder às requisições.
-Validação do balanceamento de carga com páginas simples servidas pelo Nginx.
+- Criação de um Application Load Balancer (ALB).
+- Configuração de listeners e regras de roteamento de tráfego.
+- Criação de instâncias EC2 com um servidor web configurado.
+- Validação do balanceamento de carga com página agregada no servidor Nginx.
 
 
 </br>
@@ -21,7 +21,7 @@ Validação do balanceamento de carga com páginas simples servidas pelo Nginx.
 
 - **Terraform**: Para provisionar os recursos de infraestrutura na AWS.
 - **AWS**: Para criar e gerenciar os recursos como EC2, ALB, e Security Groups.
-- **Nginx**: Para servir uma página HTML simples em cada instância.
+- **Nginx**: Para servir a página HTML de teste em cada instância criada.
 
 
 </br>
@@ -30,7 +30,7 @@ Validação do balanceamento de carga com páginas simples servidas pelo Nginx.
 
 - Conta AWS configurada.
 - Terraform instalado.
-- Credenciais da AWS configuradas (via aws configure ou variáveis de ambiente).
+- Credenciais da AWS configuradas (aws configure).
 - Chave SSH criada e registrada na AWS para acesso às instâncias EC2.
 
 
@@ -38,11 +38,12 @@ Validação do balanceamento de carga com páginas simples servidas pelo Nginx.
 
 ## Estrutura do Projeto
 
+- Diretório `infra`: Contém toda a infraestrutura do projeto que pode ser utilizada como modulo.
+- Diretório `env`: Contém subdiretórios, podendo ser cada um deles um ambiente diferente.
 - `provider.tf`: Configuração do provedor AWS.
-- `main.tf`: Configuração principal para criar o ALB, listeners e instâncias EC2.
+- `main.tf`: Configuração principal para criar o ALB, listeners, Autoscaling Group, Autoscaling Policy, Target Group, default VPC e subnets, e Launch Template.
 - `variables.tf`: Definição de variáveis utilizadas no projeto.
-- `outputs.tf`: Saídas do Terraform para identificar recursos criados.
-- `files/`: Contém o arquivo HTML usado como página de teste.
+- `outputs.tf`: Saídas do Terraform identificando os recursos criados.
 
 
 <br>
@@ -50,9 +51,12 @@ Validação do balanceamento de carga com páginas simples servidas pelo Nginx.
 ## Exemplo de uso
 
 1. Configurar as Variáveis:
-Edite o arquivo variables.tf ou passe valores via linha de comando para configurar as variáveis, como tipo de instância, região e ID da imagem (AMI).
+Edite o arquivo `terraform.tfvars` para configurar as variáveis, como `key_name` e `path_key`.
 
-2. Inicializar o Terraform:
+**Nota**: Em caso de configuração de um novo ambiente utilizando a modularização, se faz necessário especificar valores para as variáveis `key_name`, `path_key`, `environment`, `max_size`, `min_size`, `prod`, bem como especificar `source = "../../infra"`.
+
+
+2. Inicializar o Terraform no ambiente desejado:
 ```
 terraform init
 ```
@@ -61,7 +65,7 @@ terraform init
 ```
 terraform apply
 ```
-Confirme quando solicitado. O Terraform criará o Load Balancer, instâncias EC2 e configurará o ambiente.
+Confirme quando solicitado.
 
 4. Testar o Balanceamento de Carga:
 - Obtenha o DNS do Load Balancer no output do Terraform ou via AWS Management Console.
