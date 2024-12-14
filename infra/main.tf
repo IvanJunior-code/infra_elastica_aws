@@ -15,7 +15,7 @@ provider "aws" {
 }
 
 resource "aws_launch_template" "template_maquina" {
-  name                 = "Template_de_Maquina"
+  name                 = "Template_de_Maquina_${var.environment}"
   image_id             = var.image_id
   instance_type        = var.instance_type
   key_name             = var.key_name
@@ -32,12 +32,12 @@ resource "aws_launch_template" "template_maquina" {
   ) : ""
 
   tags = {
-    Name = "Máquina de ${var.environment}"
+    Name = "Máquina ${var.environment}"
   }
 }
 
 resource "aws_autoscaling_group" "autoscaling_maquinas" {
-  name               = "Autoscaling_maquinas"
+  name               = "Autoscaling_maquinas_${var.environment}"
   availability_zones = ["${var.regiao}a", "${var.regiao}b"]
   min_size           = var.min_size
   max_size           = var.max_size
@@ -58,7 +58,7 @@ resource "aws_lb" "load_balancer" {
   subnets  = [aws_default_subnet.subnet1.id, aws_default_subnet.subnet2.id]
 
   tags = {
-    Name = "Load Balancer"
+    Name = "Load Balancer ${var.environment}"
   }
 }
 
@@ -86,13 +86,13 @@ resource "aws_default_subnet" "subnet2" {
 
 resource "aws_lb_target_group" "target_group" {
   count    = var.prod ? 1 : 0
-  name     = "TargetGroup"
+  name     = "TargetGroup${var.environment}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_default_vpc.default_vpc.id
 
   tags = {
-    Name = "Target Group"
+    Name = "Target Group ${var.environment}"
   }
 }
 
@@ -108,13 +108,13 @@ resource "aws_lb_listener" "load_balancer_listener" {
   }
 
   tags = {
-    Name = "Load Balancer Listener"
+    Name = "Load Balancer Listener ${var.environment}"
   }
 }
 
 resource "aws_autoscaling_policy" "autoscaling_policy" {
   count                  = var.prod ? 1 : 0
-  name                   = "AutoscalingPolicy"
+  name                   = "AutoscalingPolicy${var.environment}"
   autoscaling_group_name = aws_autoscaling_group.autoscaling_maquinas.name
   policy_type            = "TargetTrackingScaling"
 
