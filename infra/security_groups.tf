@@ -1,5 +1,5 @@
 resource "aws_security_group" "security_group" {
-  name = var.environment
+  name = "SecurityGroup${var.environment}"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ingress_rule_dev_ssh" {
@@ -13,7 +13,7 @@ resource "aws_vpc_security_group_ingress_rule" "ingress_rule_dev_ssh" {
   to_port     = 22
 
   tags = {
-    Name = "Ingress Rule"
+    Name = "Ingress Rule SSH ${var.environment}"
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_vpc_security_group_egress_rule" "egress_rule_enable_all" {
   ip_protocol = "-1"
 
   tags = {
-    Name = "Egress Rule"
+    Name = "Egress Rule ${var.environment}"
   }
 }
 
@@ -40,6 +40,6 @@ resource "aws_vpc_security_group_ingress_rule" "ingress_rule_prod_http" {
   to_port     = 80
 
   tags = {
-    Name = "Ingress Rule"
+    Name = "Ingress Rule HTTP ${var.environment}"
   }
 }
