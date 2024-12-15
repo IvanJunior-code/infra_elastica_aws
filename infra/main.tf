@@ -19,7 +19,7 @@ resource "aws_launch_template" "template_maquina" {
   image_id             = var.image_id
   instance_type        = var.instance_type
   key_name             = var.key_name
-  security_group_names = [var.environment]
+  security_group_names = [ aws_security_group.security_group.name ]
 
   user_data = var.prod ? base64encode(<<-EOF
               #!/bin/bash
