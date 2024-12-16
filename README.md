@@ -67,11 +67,11 @@ terraform apply
 ```
 Confirme quando solicitado.
 
-4. Testar o Balanceamento de Carga:
-- Obtenha o DNS do Load Balancer no output do Terraform ou via AWS Management Console.
-- Acesse o DNS do Load Balancer no navegador. Você verá uma página de teste simples servida por Nginx, confirmando que o balanceamento de carga está funcionando.
+4. Testar os acessos:
+- O output do ambiente especificado como produção (`prod = true`) exibe o endereço do Load Balancer após aplicar a IaC.
+- O output de demais ambientes (`prod = false`) exibirão apenas a string de conexão ssh para as instâncias que foram criadas.
 
 <br>
 
 ## Conclusão
-Este projeto fornece um ambiente de teste para configurar e entender como um Load Balancer funciona na AWS utilizando Terraform. Ele demonstra conceitos importantes de infraestrutura como código, balanceamento de carga e automação no provisionamento de recursos.
+Este projeto fornece um ambiente de teste para configurar uma infraestrutura elástica na AWS através da modularização com Terraform. Este projeto também contribui para o entendimento de como um Load Balancer funciona na AWS, contendo conceitos importantes de infraestrutura e provisionamento de recursos.
