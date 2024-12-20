@@ -31,6 +31,14 @@ resource "aws_launch_template" "template_maquina" {
               EOF
   ) : ""
 
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "Máquina ${var.environment}-${timestamp()}}"
+    }
+  }
+
   tags = {
     Name = "Máquina ${var.environment}"
   }
@@ -122,6 +130,6 @@ resource "aws_autoscaling_policy" "autoscaling_policy" {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-    target_value = 50.0
+    target_value = 25.0
   }
 }
